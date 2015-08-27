@@ -37,6 +37,7 @@ public class Game extends ApplicationAdapter {
 
         addEntity(new Menu());
         addEntity(new Road());
+        addEntity(new Car());
 
         camera = new OrthographicCamera();
         camera.setToOrtho(false);

@@ -162,10 +162,12 @@ public class Road extends Entity {
         poly.setOrigin(0, 0);
 
         // Finally, render
+        batch.end();
         polyBatch.setProjectionMatrix(batch.getProjectionMatrix());
         polyBatch.begin();
         poly.draw(polyBatch);
         polyBatch.end();
+        batch.begin();
     }
 
     private short renderRoadPiece(Vector2 from, Vector2 to, short pointPosition, ArrayList<Short> pointsToRender, ArrayList<Float> vectorsToRender) {
