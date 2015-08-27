@@ -23,7 +23,7 @@ public class Road extends Entity {
     private Random random;
     private ArrayList<UpcomingPoint> points;
 
-    private final int ROAD_WIDTH = 150;
+    private final int ROAD_WIDTH = 300;
 
     class UpcomingPoint extends Vector2 {
         public int toX;
@@ -162,6 +162,7 @@ public class Road extends Entity {
         poly.setOrigin(0, 0);
 
         // Finally, render
+        polyBatch.setProjectionMatrix(batch.getProjectionMatrix());
         polyBatch.begin();
         poly.draw(polyBatch);
         polyBatch.end();
