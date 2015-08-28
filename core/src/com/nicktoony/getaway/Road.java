@@ -24,6 +24,7 @@ public class Road extends Entity {
     private ArrayList<UpcomingPoint> points;
 
     private final int ROAD_WIDTH = 300;
+    private final int ROAD_SCREEN_OFFSET = 300;
 
     class UpcomingPoint extends Vector2 {
         public int toX;
@@ -70,7 +71,7 @@ public class Road extends Entity {
                     } else {
                         toRemove.add(point);
                     }
-                } else {
+                } else if (point.y < Gdx.graphics.getHeight() + ROAD_SCREEN_OFFSET) {
                     if (point.x > point.toX) {
                         point.x -= 1;
                     } else if (point.x < point.toX) {
@@ -84,10 +85,10 @@ public class Road extends Entity {
             }
         } else {
             if (random.nextBoolean()) {
-                int offset = random.nextInt(80) - 40;
+                int offset = random.nextInt(120) - 60;
                 points.add(new UpcomingPoint(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() + 100, Gdx.graphics.getWidth() / 2 + offset));
             } else {
-                int offset = random.nextInt(80) - 40;
+                int offset = random.nextInt(120) - 60;
                 points.add(new UpcomingPoint(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() + 100, Gdx.graphics.getWidth() / 2 + offset));
                 points.add(new UpcomingPoint(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() + 600, Gdx.graphics.getWidth() / 2 - offset));
             }
@@ -102,10 +103,10 @@ public class Road extends Entity {
 
         int width = Gdx.graphics.getWidth();
         int height = Gdx.graphics.getHeight();
-        data.add(new Vector2(width/2, -200));
+        data.add(new Vector2(width / 2, -ROAD_SCREEN_OFFSET));
         data.addAll(points);
 //        data.add(new Vector2(width/2 - offset, height/4*3));
-        data.add(new Vector2(width/2, height + 200));
+        data.add(new Vector2(width/2, height + ROAD_SCREEN_OFFSET));
 
         // Convert the arraylist to an array
         Vector2[] dataSet = new Vector2[data.size()];
@@ -242,5 +243,37 @@ public class Road extends Entity {
 
         // Return how many vectors we added
         return (short) ((short) vectors.length/2);
+    }
+
+    public Vector2 getVectorAt(Vector2 in) {
+        // Each point needs a vector2
+        Vector2 point = new Vector2();
+
+        float distance = -1;
+        int use = -1;
+        int k = 1000; // This sets the smoothness of the curve
+        Vector2[] points = new Vector2[k];
+        for (int i = 0; i < k - 1; ++i) {
+            // Each point needs a vector2
+            points[i] = new Vector2();
+            // Create the values from the catmull, and assign to the point's vector
+            catmull.valueAt(points[i], ((float) i) / ((float) k - 1));
+
+            if (distance == -1 || points[i].dst(in) < distance) {
+                distance = points[i].dst(in);
+                point = points[i];
+                use = i;
+            }
+        }
+
+        Vector2 from = new Vector2(points[use].x, points[use].y);
+        Vector2 to = new Vector2(points[use + 1].x, points[use + 1].y);
+        // Get the mid point between the from and to
+        Vector2 v2 = new Vector2(from).sub(to);
+        // Calculate the angle between the two points
+        float angle = (float) Math.toDegrees(Math.atan2(v2.y, v2.x)) + 90;
+        point.setAngle(angle);
+
+        return point;
     }
 }

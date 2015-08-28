@@ -25,8 +25,9 @@ public class Game extends ApplicationAdapter {
     private int state = STATE_START;
     private OrthographicCamera camera;
     private GameConfig config;
-	
-	@Override
+    private Road road;
+
+    @Override
 	public void create () {
 		batch = new SpriteBatch();
         config = new GameConfig();
@@ -36,7 +37,8 @@ public class Game extends ApplicationAdapter {
         music.setLooping(true);
 
         addEntity(new Menu());
-        addEntity(new Road());
+        road = new Road();
+        addEntity(road);
         addEntity(new Car());
 
         camera = new OrthographicCamera();
@@ -70,5 +72,9 @@ public class Game extends ApplicationAdapter {
         entityList.add(entity);
         entity.create();
         return entity;
+    }
+
+    public Road getRoad() {
+        return road;
     }
 }
