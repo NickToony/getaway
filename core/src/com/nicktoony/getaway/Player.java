@@ -58,12 +58,15 @@ public class Player extends Entity {
         }
 
         if (reset) {
-            if (rotation < 0) {
-                rotation += SPEED_ROTATION;
-                game.getCamera().rotate(SPEED_ROTATION);
+            if (Math.abs(rotation) < SPEED_ROTATION * 2) {
+                game.getCamera().rotate(rotation);
+                rotation = 0;
+            } else if (rotation < 0) {
+                rotation += SPEED_ROTATION*2;
+                game.getCamera().rotate(SPEED_ROTATION*2);
             } else if (rotation > 0) {
-                rotation -= SPEED_ROTATION;
-                game.getCamera().rotate(-SPEED_ROTATION);
+                rotation -= SPEED_ROTATION*2;
+                game.getCamera().rotate(-SPEED_ROTATION*2);
             }
         }
 
