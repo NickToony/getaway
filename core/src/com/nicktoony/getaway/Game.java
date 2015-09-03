@@ -33,7 +33,7 @@ public class Game extends ApplicationAdapter {
         config = new GameConfig();
 
         Music music = Gdx.audio.newMusic(Gdx.files.internal("music/rocket.mp3"));
-        music.play();
+//        music.play();
         music.setLooping(true);
 
         addEntity(new Menu());
