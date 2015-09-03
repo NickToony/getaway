@@ -206,11 +206,11 @@ public class Road extends Entity {
         if (Math.abs(targetAngle - currentAngle) < rate) {
             lastChange -= 1;
         } else if (targetAngle > currentAngle) {
-            currentAngle += rate;
-            game.getCamera().rotate(rate);
+//            currentAngle += rate;
+//            game.getCamera().rotate(rate);
         } else if (targetAngle < currentAngle) {
-            currentAngle -= rate;
-            game.getCamera().rotate(-rate);
+//            currentAngle -= rate;
+//            game.getCamera().rotate(-rate);
         }
 
     }
