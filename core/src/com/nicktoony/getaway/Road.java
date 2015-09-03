@@ -16,17 +16,18 @@ public class Road extends Entity {
     // Constants
     private static final int TILE_SIZE = 128;
     private static final int ROAD_WIDTH = 3;
-    private static final int ROAD_SPEED = 5;
+    private static final int ROAD_SPEED = 8;
     private static final int ROAD_OFFSET_HEIGHT = 512;
     private static final int ROAD_OFFSET_WIDTH = 256;
+    private static final int ROAD_OFFSET_SIDES = 72;
 
     private static final int GENERATOR_MIN_CHANGE = 10;
     private static final int GENERATOR_MAX_CHANGE = 25;
     private static final int GENERATOR_MIN_SHARPNESS = 10;
-    private static final int GENERATOR_MAX_SHARPNESS = 35;
+    private static final int GENERATOR_MAX_SHARPNESS = 15;
     private static final int GENERATOR_RESET_MULTIPLIER = 6;
     private static final float GENERATOR_MIN_RATE = .2f;
-    private static final float GENERATOR_MAX_RATE = .6f;
+    private static final float GENERATOR_MAX_RATE = .3f;
 
     // Rendering
     private SpriteSheetReader spriteSheet;
@@ -237,7 +238,7 @@ public class Road extends Entity {
         RoadPosition vector2 = new RoadPosition(0, 0, 0);
         for (UpcomingRoad road : upcomingRoads) {
             if (road.y <= game.getHeight()*y) {
-                vector2.x = (int) (road.x + (getRoadWidth()/2)*x);
+                vector2.x = (int) (road.x + (getRoadWidth()/2 - ROAD_OFFSET_SIDES)*x);
                 vector2.y = (int) (game.getHeight()*y);
                 vector2.angle = currentAngle;
             } else {
