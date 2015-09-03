@@ -1,279 +1,172 @@
 package com.nicktoony.getaway;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.*;
-import com.badlogic.gdx.math.CatmullRomSpline;
-import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 /**
  * Created by nick on 23/03/15.
  */
 public class Road extends Entity {
 
-    private PolygonSpriteBatch polyBatch;
-    private Texture textureSolid;
-    private CatmullRomSpline<Vector2> catmull;
-    private Random random;
-    private ArrayList<UpcomingPoint> points;
+    // Constants
+    private static final int TILE_SIZE = 128;
+    private static final int ROAD_WIDTH = 3;
+    private static final int ROAD_SPEED = 5;
+    private static final int ROAD_OFFSET = 256;
 
-    private final int ROAD_WIDTH = 300;
-    private final int ROAD_SCREEN_OFFSET = 300;
+    // Rendering
+    private SpriteSheetReader spriteSheet;
+    private String roadMiddle;
 
-    class UpcomingPoint extends Vector2 {
-        public int toX;
+    // Logic
+    private List<RoadCombo> roadCombos = new ArrayList<RoadCombo>();
+    private List<UpcomingRoad> upcomingRoads = new ArrayList<UpcomingRoad>();
+    private List<UpcomingRoad> deleteRoads = new ArrayList<UpcomingRoad>();
 
-        public UpcomingPoint(float x, float y, int toX) {
-            super(x, y);
-            this.toX = toX;
+    class UpcomingRoad {
+        public int x;
+        public int y;
+        public RoadCombo roadCombo;
+
+        public UpcomingRoad(int x, int y, RoadCombo roadCombo) {
+            this.x = x;
+            this.y = y;
+            this.roadCombo = roadCombo;
+        }
+    }
+
+    class RoadCombo {
+        public String left;
+        public String right;
+        public float offset = 0;
+        public int angle = 0;
+
+        public RoadCombo(String left, String right) {
+            this.left = left;
+            this.right = right;
         }
 
+        public RoadCombo offset(float offset) {
+            this.offset = offset;
+            return this;
+        }
 
-        UpcomingPoint() {
+        public RoadCombo angle(int angle) {
+            this.angle = angle;
+            return this;
+        }
+    }
+
+    class RoadPosition {
+        public int x;
+        public int y;
+        public int angle;
+
+        public RoadPosition(int x, int y, int angle) {
+            this.x = x;
+            this.y = y;
+            this.angle = angle;
         }
     }
 
     @Override
     public void create() {
-        // Generate a temporary texture
-        Pixmap pix = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
-        pix.setColor(Color.DARK_GRAY); // DE is red, AD is green and BE is blue.
-        pix.fill();
-        textureSolid = new Texture(pix);
-        polyBatch = new PolygonSpriteBatch();
+        // Read the sprite sheet
+        spriteSheet = new SpriteSheetReader(Gdx.files.internal("graphics/spritesheet_tiles.xml"), Gdx.files.internal("graphics/spritesheet_tiles.png"));
 
-        // random
-        random = new Random();
-        points = new ArrayList<UpcomingPoint>();
+        // Add road parts
+        roadCombos.add(new RoadCombo("road_asphalt21.png", "road_asphalt23.png").offset(0));
 
-        // define the initial road
-        defineRoad();
+        // Define the road middle
+        roadMiddle = "road_asphalt22.png";
     }
 
     @Override
     public void step() {
 
-        if (!points.isEmpty()) {
-            ArrayList<UpcomingPoint> toRemove = new ArrayList<UpcomingPoint>();
-            for (UpcomingPoint point : points) {
-                point.y -= 10;
-                if (point.y < 100) {
-                    if (point.x > Gdx.graphics.getWidth()/2) {
-                        point.x -= 1;
-                    } else if (point.x < Gdx.graphics.getWidth()/2) {
-                        point.x += 1;
-                    } else {
-                        toRemove.add(point);
-                    }
-                } else if (point.y < Gdx.graphics.getHeight() + ROAD_SCREEN_OFFSET) {
-                    if (point.x > point.toX) {
-                        point.x -= 1;
-                    } else if (point.x < point.toX) {
-                        point.x += 1;
-                    }
-                }
-            }
-
-            for (UpcomingPoint point : toRemove) {
-                points.remove(point);
-            }
-        } else {
-            if (random.nextBoolean()) {
-                int offset = random.nextInt(120) - 60;
-                points.add(new UpcomingPoint(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() + 100, Gdx.graphics.getWidth() / 2 + offset));
-            } else {
-                int offset = random.nextInt(120) - 60;
-                points.add(new UpcomingPoint(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() + 100, Gdx.graphics.getWidth() / 2 + offset));
-                points.add(new UpcomingPoint(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() + 600, Gdx.graphics.getWidth() / 2 - offset));
+        // Road each upcoming road
+        for (UpcomingRoad upcomingRoad : this.upcomingRoads) {
+            // Move the segment down
+            upcomingRoad.y -= ROAD_SPEED;
+            // If too far off the screen
+            if (upcomingRoad.y < -ROAD_OFFSET) {
+                // destroy it
+                deleteRoads.add(upcomingRoad);
             }
         }
 
-        defineRoad();
-    }
+        // For each road to be removed
+        for (UpcomingRoad toDelete : deleteRoads) {
+            // remove it from the upcoming array
+            upcomingRoads.remove(toDelete);
+        }
+        // clear roads to be deleted - they already have been
+        deleteRoads.clear();
 
-    private void defineRoad() {
-        // Define an array of road points to render
-        List<Vector2> data = new ArrayList<Vector2>();
+        // While there is empty space on the screen for road
+        while ((upcomingRoads.size()-1) * TILE_SIZE <= game.getHeight() + ROAD_OFFSET) {
+            // Find the last road segment
+            UpcomingRoad last = upcomingRoads.isEmpty() ? null : upcomingRoads.get(upcomingRoads.size()-1);
+            int y = -ROAD_OFFSET;
+            // If a last road segment was found, jump to just above it
+            if (last != null) {
+                y = last.y + TILE_SIZE;
+            }
 
-        int width = Gdx.graphics.getWidth();
-        int height = Gdx.graphics.getHeight();
-        data.add(new Vector2(width / 2, -ROAD_SCREEN_OFFSET));
-        data.addAll(points);
-//        data.add(new Vector2(width/2 - offset, height/4*3));
-        data.add(new Vector2(width/2, height + ROAD_SCREEN_OFFSET));
-
-        // Convert the arraylist to an array
-        Vector2[] dataSet = new Vector2[data.size()];
-        data.toArray(dataSet);
-
-        // Create the catmull, setting its spancount manually
-        catmull = new CatmullRomSpline<Vector2>(dataSet, true);
-        catmull.spanCount = dataSet.length-1;
+            // Add a new segment
+            upcomingRoads.add(new UpcomingRoad(game.getWidth()/2, y, roadCombos.get(0)));
+        }
     }
 
     @Override
     public void render(SpriteBatch batch) {
-        // The points array defines the circles to create between vectors
-        ArrayList<Short> pointsToRender = new ArrayList<Short>();
-        // The vectors represent positions on the maps
-        ArrayList<Float> vectorsToRender = new ArrayList<Float>();
-        // The pointPosition represents the position in the points array
-        short pointPosition = 0;
+        for (UpcomingRoad upcomingRoad : this.upcomingRoads) {
+            float offset = getRoadWidth()/2;
 
-        // Extract points of curve from spline
-        int k = 100; // This sets the smoothness of the curve
-        Vector2[] points = new Vector2[k];
-        for (int i = 0; i < k - 1; ++i) {
-            // Each point needs a vector2
-            points[i] = new Vector2();
-            // Create the values from the catmull, and assign to the point's vector
-            catmull.valueAt(points[i], ((float) i) / ((float) k - 1));
+            // Left
+            batch.draw(spriteSheet.getTexture(upcomingRoad.roadCombo.left), upcomingRoad.x - offset, upcomingRoad.y);
+            offset -= 128;
+
+            // Middle
+            for (int i = 0; i < ROAD_WIDTH; i ++) {
+                batch.draw(spriteSheet.getTexture(roadMiddle), upcomingRoad.x - offset, upcomingRoad.y);
+                offset -= 128;
+            }
+
+            // Right
+            batch.draw(spriteSheet.getTexture(upcomingRoad.roadCombo.right), upcomingRoad.x - offset, upcomingRoad.y);
+            offset -= 128;
         }
-
-        // Render the road piece for each section
-        for (int i = 0; i < k - 2; ++i) {
-            Vector2 from = new Vector2(points[i].x, points[i].y);
-            Vector2 to = new Vector2(points[i + 1].x, points[i + 1].y);
-
-            // Render the actual road piece
-            pointPosition += renderRoadPiece(from, to, (short) pointPosition, pointsToRender, vectorsToRender);
-        }
-
-        // Convert the float arraylist to a float array
-        float[] floatArray = new float[vectorsToRender.size()];
-        for (int i = 0; i < vectorsToRender.size(); i++) {
-            floatArray[i] = vectorsToRender.get(i);
-        }
-        // Conver the short arraylist to a short array
-        short[] shortArray = new short[pointsToRender.size()];
-        for (int i = 0; i < pointsToRender.size(); i++) {
-            shortArray[i] = pointsToRender.get(i);
-        }
-
-        // Generate the polygon
-        PolygonRegion polyReg = new PolygonRegion(new TextureRegion(textureSolid),
-                floatArray, shortArray);
-        PolygonSprite poly = new PolygonSprite(polyReg);
-        poly.setOrigin(0, 0);
-
-        // Finally, render
-        batch.end();
-        polyBatch.setProjectionMatrix(batch.getProjectionMatrix());
-        polyBatch.begin();
-        poly.draw(polyBatch);
-        polyBatch.end();
-        batch.begin();
     }
 
-    private short renderRoadPiece(Vector2 from, Vector2 to, short pointPosition, ArrayList<Short> pointsToRender, ArrayList<Float> vectorsToRender) {
-
-        // Get the mid point between the from and to
-        Vector2 v2 = new Vector2(from).sub(to);
-        // Calculate the angle between the two points
-        float angle = (float) Math.toDegrees(Math.atan2(v2.y, v2.x)) + 90;
-
-        // Setup variables
-        Vector2 temp;
-        float[] vectors = new float[8];
-        // Create a vector from the origin to the left side of the road
-        Vector2 left = new Vector2(-ROAD_WIDTH, 0);
-        left.rotate(angle); // angle it to road angle
-        // And again for right, calculating from origin to right side of road
-        Vector2 right = new Vector2(ROAD_WIDTH, 0);
-        right.rotate(angle); // angle to match
-
-        // First
-        temp = new Vector2(from);
-        temp.add(left);
-        vectors[0] = temp.x;
-        vectors[1] = temp.y;
-
-        // Second
-        temp = new Vector2(from);
-        //temp.rotate(angle);
-        temp.add(right);
-        vectors[2] = temp.x;
-        vectors[3] = temp.y;
-
-        // Third
-        temp = new Vector2(to);
-        temp.add(right);
-        //temp.rotate(angle);
-        vectors[4] = temp.x;
-        vectors[5] = temp.y;
-
-        // Forth
-        temp = new Vector2(to);
-        temp.add(left);
-        //temp.rotate(angle);
-        vectors[6] = temp.x;
-        vectors[7] = temp.y;
-
-        // Add all the vector coords to the render array
-        for (float vector : vectors) {
-            vectorsToRender.add(vector);
-        }
-        // Now connect them with triangles
-        short[] points;
-        // If there was a previous section of road
-        if (pointPosition > 0) {
-            // render all circles between, AND connect to the previous sections
-            points = new short[]{
-                    pointPosition, (short) (pointPosition + 1), (short) (pointPosition + 2),         // Two triangles using vertex indices.
-                    pointPosition, (short) (pointPosition + 2), (short) (pointPosition + 3),
-                    pointPosition, (short) (pointPosition + 1), (short) (pointPosition -2), // prev section
-                    pointPosition, (short) (pointPosition + 1), (short) (pointPosition -1) // prev section
-            };
-        } else {
-            points = new short[]{
-                    pointPosition, (short) (pointPosition + 1), (short) (pointPosition + 2),         // Two triangles using vertex indices.
-                    pointPosition, (short) (pointPosition + 2), (short) (pointPosition + 3)
-            };
-        }
-        // Add all the points to the render array
-        for (short point : points) {
-            pointsToRender.add(point);
-        }
-
-        // Return how many vectors we added
-        return (short) ((short) vectors.length/2);
-    }
-
-    public Vector2 getVectorAt(Vector2 in) {
-        // Each point needs a vector2
-        Vector2 point = new Vector2();
-
-        float distance = -1;
-        int use = -1;
-        int k = 1000; // This sets the smoothness of the curve
-        Vector2[] points = new Vector2[k];
-        for (int i = 0; i < k - 1; ++i) {
-            // Each point needs a vector2
-            points[i] = new Vector2();
-            // Create the values from the catmull, and assign to the point's vector
-            catmull.valueAt(points[i], ((float) i) / ((float) k - 1));
-
-            if (distance == -1 || points[i].dst(in) < distance) {
-                distance = points[i].dst(in);
-                point = points[i];
-                use = i;
+    /**
+     * Find the position on the screen, given the road position
+     * @param x the x position of the road (from -1 to 1)
+     * @param y the y position of the road (from 0 to 1)
+     * @return
+     */
+    public RoadPosition findScreenPosition(float x, float y) {
+        RoadPosition vector2 = new RoadPosition(0, 0, 0);
+        for (UpcomingRoad road : upcomingRoads) {
+            if (road.y <= game.getHeight()*y) {
+                vector2.x = (int) (road.x + (getRoadWidth()/2)*x);
+                vector2.y = (int) (game.getHeight()*y);
+                vector2.angle = road.roadCombo.angle;
+            } else {
+                break;
             }
         }
+        return vector2;
+    }
 
-        Vector2 from = new Vector2(points[use].x, points[use].y);
-        Vector2 to = new Vector2(points[use + 1].x, points[use + 1].y);
-        // Get the mid point between the from and to
-        Vector2 v2 = new Vector2(from).sub(to);
-        // Calculate the angle between the two points
-        float angle = (float) Math.toDegrees(Math.atan2(v2.y, v2.x)) + 90;
-        point.setAngle(angle);
-
-        return point;
+    /**
+     * Calculate the road width
+     * @return
+     */
+    public float getRoadWidth() {
+        return (TILE_SIZE) * (ROAD_WIDTH + 2);
     }
 }

@@ -1,12 +1,8 @@
 package com.nicktoony.getaway;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Vector2;
 
 /**
  * Created by nick on 27/08/15.
@@ -17,16 +13,16 @@ public class Car extends Entity {
 
     @Override
     public void create() {
-        texture = new Texture("graphics/car.png");
+        texture = new Texture("graphics/vehicles/car_black_1.png");
         sprite = new Sprite(texture);
         sprite.setOriginCenter();
     }
 
     @Override
     public void step() {
-        Vector2 pos = game.getRoad().getVectorAt(new Vector2(Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2));
-        sprite.setCenter(pos.x, Gdx.graphics.getHeight()/2);
-        sprite.setRotation((pos.angle()));
+        Road.RoadPosition pos = game.getRoad().findScreenPosition(0, 0.25f);
+        sprite.setCenter(pos.x, pos.y);
+        sprite.setRotation(pos.angle);
     }
 
     @Override

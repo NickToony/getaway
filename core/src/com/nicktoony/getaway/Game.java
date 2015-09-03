@@ -9,6 +9,8 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.utils.Scaling;
+import com.badlogic.gdx.utils.viewport.ScalingViewport;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +28,7 @@ public class Game extends ApplicationAdapter {
     private OrthographicCamera camera;
     private GameConfig config;
     private Road road;
+    private ScalingViewport scalingViewport;
 
     @Override
 	public void create () {
@@ -43,7 +46,7 @@ public class Game extends ApplicationAdapter {
 
         camera = new OrthographicCamera();
         camera.setToOrtho(false);
-        camera.zoom = (float) config.game_resolution_x / (float) Gdx.graphics.getWidth();
+        scalingViewport = new ScalingViewport(Scaling.fill, config.game_resolution_x, config.game_resolution_y, camera);
 	}
 
 	@Override
@@ -51,7 +54,11 @@ public class Game extends ApplicationAdapter {
 		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        camera.update();
+//        camera.position.set(0, 0, 0);
+        camera.position.set(config.game_resolution_x / 2, config.game_resolution_y / 2, 0);
+        scalingViewport.update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+//        camera.update();
+
 
         // Step event
         for (Entity entity : entityList) {
@@ -76,5 +83,17 @@ public class Game extends ApplicationAdapter {
 
     public Road getRoad() {
         return road;
+    }
+
+    public GameConfig getConfig() {
+        return config;
+    }
+
+    public int getWidth() {
+        return config.game_resolution_x;
+    }
+
+    public int getHeight() {
+        return config.game_resolution_y;
     }
 }

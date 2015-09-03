@@ -5,6 +5,6 @@ package com.nicktoony.getaway;
  */
 public class GameConfig {
     public int game_resolution_x = 1024;
-    public int game_resolution_y = 768;
+    public int game_resolution_y = 728;
     public boolean game_fullscreen = false;
 }
