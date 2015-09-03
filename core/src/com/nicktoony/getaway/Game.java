@@ -96,4 +96,8 @@ public class Game extends ApplicationAdapter {
     public int getHeight() {
         return config.game_resolution_y;
     }
+
+    public OrthographicCamera getCamera() {
+        return camera;
+    }
 }
