@@ -13,6 +13,7 @@ public class Player extends Entity {
     private final static int MAX_ROTATE = 15;
     private final static float SPEED_X = 0.04f;
     private final static float SPEED_ROTATION = 0.5f;
+    private final static int INPUT_OFFSET = 150;
 
     private Texture texture;
     private Sprite sprite;
@@ -34,9 +35,9 @@ public class Player extends Entity {
 
         float speed = 0;
         if (Gdx.input.isTouched()) {
-            if (Gdx.input.getX() > Gdx.graphics.getWidth()/2) {
+            if (Gdx.input.getX() > Gdx.graphics.getWidth()/2 + INPUT_OFFSET) {
                 speed += SPEED_X;
-            } else if (Gdx.input.getX() < Gdx.graphics.getWidth()/2) {
+            } else if (Gdx.input.getX() < Gdx.graphics.getWidth()/2 - INPUT_OFFSET) {
                 speed -= SPEED_X;
             }
         }
