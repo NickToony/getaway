@@ -43,7 +43,7 @@ public class Police extends Entity {
     public void step() {
         Road.RoadPosition pos = game.getRoad().findScreenPosition(x, y);
         sprite.setCenter(pos.x, pos.y);
-        sprite.setRotation(-pos.angle/2);
+//        sprite.setRotation(-pos.angle/2);
 
         if (targetDelay == 0) {
             targetY = TARGET_Y_MIN + (random.nextFloat() * (TARGET_Y_MAX - TARGET_Y_MIN));

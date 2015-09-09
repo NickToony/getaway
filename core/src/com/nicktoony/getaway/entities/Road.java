@@ -44,9 +44,9 @@ public class Road extends Entity {
 
     // Rotation
     private float currentAngle = 0;
-    private float targetAngle = 0;
+    private float targetAngle = 10;
     private int lastChange = 0;
-    private float rate = 0;
+    private float rate = .05f;
 
     class UpcomingRoad {
         public int x;
@@ -189,30 +189,14 @@ public class Road extends Entity {
             upcomingRoads.add(new UpcomingRoad(game.getWidth() / 2, y, roadCombos.get(random.nextInt(roadCombos.size()))));
         }
 
-        if (lastChange <= 0) {
-            lastChange = GENERATOR_MIN_CHANGE + random.nextInt(GENERATOR_MAX_CHANGE - GENERATOR_MIN_CHANGE);
-
-            if (targetAngle == 0) {
-                targetAngle = GENERATOR_MIN_SHARPNESS + random.nextInt(GENERATOR_MAX_SHARPNESS - GENERATOR_MIN_SHARPNESS);
-                if (random.nextBoolean()) {
-                    targetAngle = -targetAngle;
-                }
-            } else {
-                targetAngle = 0;
-                lastChange *= GENERATOR_RESET_MULTIPLIER;
-            }
-
-            rate = random.nextFloat() * (GENERATOR_MAX_RATE - GENERATOR_MIN_RATE) + GENERATOR_MIN_RATE;
-        }
-
         if (Math.abs(targetAngle - currentAngle) < rate) {
-            lastChange -= 1;
+            targetAngle = -targetAngle;
         } else if (targetAngle > currentAngle) {
-//            currentAngle += rate;
-//            game.getCamera().rotate(rate);
+            currentAngle += rate;
+            game.getCamera().rotate(rate);
         } else if (targetAngle < currentAngle) {
-//            currentAngle -= rate;
-//            game.getCamera().rotate(-rate);
+            currentAngle -= rate;
+            game.getCamera().rotate(-rate);
         }
 
     }

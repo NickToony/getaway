@@ -10,7 +10,7 @@ import com.nicktoony.getaway.components.Entity;
  * Created by nick on 27/08/15.
  */
 public class Player extends Entity {
-    private final static int MAX_ROTATE = 25;
+    private final static int MAX_ROTATE = 15;
     private final static float SPEED_X = 0.04f;
     private final static float SPEED_ROTATION = 0.5f;
 

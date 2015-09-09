@@ -17,7 +17,7 @@ public class PoliceManager extends Entity {
     private static final int DELAY_MAX = 100;
     private static final float SPACE_BETWEEN = 0.3f;
 
-    private int lastPolice = 0;
+    private int lastPolice = 100;
     private Random random;
     private List<Police> policeList = new ArrayList<Police>();
 
