@@ -27,6 +27,7 @@ public class RoomGame extends Room {
     private List<Entity> entityList = new ArrayList<Entity>();
     private List<Entity> newEntitiesList = new ArrayList<Entity>();
     private OrthographicCamera camera;
+    private OrthographicCamera camera2;
     private Road road;
     private ScalingViewport gameViewport;
     private ScalingViewport uiViewport;
@@ -52,7 +53,9 @@ public class RoomGame extends Room {
         camera.setToOrtho(false);
         gameViewport = new ScalingViewport(Scaling.fill, game.getConfig().game_resolution_x, game.getConfig().game_resolution_y, camera);
 
-        uiViewport = new ScalingViewport(Scaling.fill, game.getConfig().game_resolution_x, game.getConfig().game_resolution_y);
+        // Setup the UI viewport
+        uiViewport = new ScalingViewport(Scaling.stretch, game.getConfig().game_resolution_x, game.getConfig().game_resolution_y);
+        // Load the UI
         BetterResourceManager betterResourcesManager = new BetterResourceManager("overlay2d/");
         sceneLoader = new SceneLoader(betterResourcesManager);
         sceneLoader.loadScene("Game", uiViewport);
@@ -69,7 +72,6 @@ public class RoomGame extends Room {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         // Sort the camera and viewport
-        camera.position.set(game.getConfig().game_resolution_x / 2, game.getConfig().game_resolution_y / 2, 0);
         gameViewport.update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         // Add new entities
@@ -91,13 +93,14 @@ public class RoomGame extends Room {
         }
         batch.end();
 
-        // Render UI
+        // Render UI (need to update to UIViewport first)
+        uiViewport.update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         sceneLoader.getEngine().update(delta);
     }
 
     @Override
     public void resize(int width, int height) {
-
+        camera.position.set(game.getConfig().game_resolution_x / 2, game.getConfig().game_resolution_y / 2, 0);
     }
 
     @Override
