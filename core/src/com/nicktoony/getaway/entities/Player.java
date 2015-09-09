@@ -1,9 +1,10 @@
-package com.nicktoony.getaway;
+package com.nicktoony.getaway.entities;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.nicktoony.getaway.components.Entity;
 
 /**
  * Created by nick on 27/08/15.

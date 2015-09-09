@@ -1,8 +1,9 @@
-package com.nicktoony.getaway;
+package com.nicktoony.getaway.entities;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.nicktoony.getaway.components.Entity;
 
 import java.util.Random;
 

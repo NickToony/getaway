@@ -1,8 +1,10 @@
-package com.nicktoony.getaway;
+package com.nicktoony.getaway.entities;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.nicktoony.getaway.components.Entity;
+import com.nicktoony.getaway.services.SpriteSheetReader;
 
 import java.util.ArrayList;
 import java.util.List;

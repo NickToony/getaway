@@ -1,4 +1,4 @@
-package com.nicktoony.getaway;
+package com.nicktoony.getaway.entities;
 
 /**
  * Created by Nick on 03/09/2015.

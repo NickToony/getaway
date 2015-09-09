@@ -1,6 +1,8 @@
-package com.nicktoony.getaway;
+package com.nicktoony.getaway.entities;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.nicktoony.getaway.components.Entity;
+import com.nicktoony.getaway.entities.Police;
 
 import java.util.ArrayList;
 import java.util.List;

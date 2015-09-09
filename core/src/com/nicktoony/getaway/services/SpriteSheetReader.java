@@ -1,4 +1,4 @@
-package com.nicktoony.getaway;
+package com.nicktoony.getaway.services;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
