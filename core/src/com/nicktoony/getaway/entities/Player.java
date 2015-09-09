@@ -60,7 +60,7 @@ public class Player extends Entity {
 
         if (reset) {
             if (Math.abs(rotation) < SPEED_ROTATION * 2) {
-                game.getCamera().rotate(rotation);
+                game.getCamera().rotate(-rotation);
                 rotation = 0;
             } else if (rotation < 0) {
                 rotation += SPEED_ROTATION*2;
