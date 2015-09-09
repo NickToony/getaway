@@ -221,7 +221,7 @@ public class Road extends Entity {
      * @return
      */
     public RoadPosition findScreenPosition(float x, float y) {
-        RoadPosition vector2 = new RoadPosition(0, 0, 0);
+        RoadPosition vector2 = new RoadPosition(0, -999, 0);
         for (UpcomingRoad road : upcomingRoads) {
             if (road.y <= game.getHeight()*y) {
                 vector2.x = (int) (road.x + (getRoadWidth()/2 - ROAD_OFFSET_SIDES)*x);

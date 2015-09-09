@@ -4,9 +4,23 @@ size: 2048,2048
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
+blueboxCross
+  rotate: false
+  xy: 194, 219
+  size: 38, 36
+  orig: 38, 36
+  offset: 0, 0
+  index: -1
+bluebutton13
+  rotate: false
+  xy: 2, 206
+  size: 190, 49
+  orig: 190, 49
+  offset: 0, 0
+  index: -1
 bluepanel
   rotate: false
-  xy: 2, 104
+  xy: 1028, 1182
   size: 100, 100
   split: 7, 8, 7, 8
   orig: 100, 100
@@ -14,14 +28,14 @@ bluepanel
   index: -1
 coloredtalltrees
   rotate: false
-  xy: 2, 206
+  xy: 2, 257
   size: 1024, 1025
   orig: 1024, 1025
   offset: 0, 0
   index: -1
 greenpanel
   rotate: false
-  xy: 1028, 1131
+  xy: 2, 104
   size: 100, 100
   split: 7, 9, 7, 8
   pad: -1, -1, 0, 8
@@ -30,7 +44,7 @@ greenpanel
   index: -1
 greypanel
   rotate: false
-  xy: 2, 2
+  xy: 1028, 1080
   size: 100, 100
   split: 8, 8, 8, 9
   pad: -1, -1, 9, 0
@@ -39,7 +53,7 @@ greypanel
   index: -1
 redpanel
   rotate: false
-  xy: 104, 104
+  xy: 1130, 1182
   size: 100, 100
   split: 7, 8, 7, 8
   orig: 100, 100
@@ -47,9 +61,16 @@ redpanel
   index: -1
 yellowpanel
   rotate: false
-  xy: 1028, 1029
+  xy: 2, 2
   size: 100, 100
   split: 10, 10, 9, 8
   orig: 100, 100
+  offset: 0, 0
+  index: -1
+yellowsliderLeft
+  rotate: false
+  xy: 104, 173
+  size: 39, 31
+  orig: 39, 31
   offset: 0, 0
   index: -1

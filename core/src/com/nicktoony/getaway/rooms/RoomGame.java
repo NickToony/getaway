@@ -1,7 +1,6 @@
 package com.nicktoony.getaway.rooms;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -9,11 +8,12 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ScalingViewport;
 import com.nicktoony.getaway.Game;
-import com.nicktoony.getaway.GameConfig;
 import com.nicktoony.getaway.components.Entity;
 import com.nicktoony.getaway.entities.Player;
 import com.nicktoony.getaway.entities.PoliceManager;
 import com.nicktoony.getaway.entities.Road;
+import com.nicktoony.getaway.services.BetterResourceManager;
+import com.uwsoft.editor.renderer.SceneLoader;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,16 +28,20 @@ public class RoomGame extends Room {
     private List<Entity> newEntitiesList = new ArrayList<Entity>();
     private OrthographicCamera camera;
     private Road road;
-    private ScalingViewport scalingViewport;
+    private ScalingViewport gameViewport;
+    private ScalingViewport uiViewport;
     private Player player;
+    private SceneLoader sceneLoader;
 
     public RoomGame(Game game) {
         super(game);
         batch = new SpriteBatch();
 
-        Music music = Gdx.audio.newMusic(Gdx.files.internal("music/rocket.mp3"));
-        music.play();
-        music.setLooping(true);
+        if (game.getConfig().sound_music) {
+            Music music = Gdx.audio.newMusic(Gdx.files.internal("music/rocket.mp3"));
+            music.play();
+            music.setLooping(true);
+        }
 
         road = new Road();
         addEntity(road);
@@ -46,7 +50,12 @@ public class RoomGame extends Room {
 
         camera = new OrthographicCamera();
         camera.setToOrtho(false);
-        scalingViewport = new ScalingViewport(Scaling.fill, game.getConfig().game_resolution_x, game.getConfig().game_resolution_y, camera);
+        gameViewport = new ScalingViewport(Scaling.fill, game.getConfig().game_resolution_x, game.getConfig().game_resolution_y, camera);
+
+        uiViewport = new ScalingViewport(Scaling.fill, game.getConfig().game_resolution_x, game.getConfig().game_resolution_y);
+        BetterResourceManager betterResourcesManager = new BetterResourceManager("overlay2d/");
+        sceneLoader = new SceneLoader(betterResourcesManager);
+        sceneLoader.loadScene("Game", uiViewport);
     }
 
     @Override
@@ -61,7 +70,7 @@ public class RoomGame extends Room {
 
         // Sort the camera and viewport
         camera.position.set(game.getConfig().game_resolution_x / 2, game.getConfig().game_resolution_y / 2, 0);
-        scalingViewport.update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        gameViewport.update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         // Add new entities
         if (!newEntitiesList.isEmpty()) {
@@ -81,6 +90,9 @@ public class RoomGame extends Room {
             entity.render(batch);
         }
         batch.end();
+
+        // Render UI
+        sceneLoader.getEngine().update(delta);
     }
 
     @Override
