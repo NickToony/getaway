@@ -21,22 +21,19 @@ import java.util.List;
 /**
  * Created by Nick on 09/09/2015.
  */
-public class RoomGame implements Screen {
+public class RoomGame extends Room {
 
     private SpriteBatch batch;
     private List<Entity> entityList = new ArrayList<Entity>();
     private List<Entity> newEntitiesList = new ArrayList<Entity>();
     private OrthographicCamera camera;
-    private GameConfig config;
     private Road road;
     private ScalingViewport scalingViewport;
     private Player player;
-    private Game game;
 
     public RoomGame(Game game) {
-        this.game = game;
+        super(game);
         batch = new SpriteBatch();
-        config = new GameConfig();
 
         Music music = Gdx.audio.newMusic(Gdx.files.internal("music/rocket.mp3"));
         music.play();
@@ -49,7 +46,7 @@ public class RoomGame implements Screen {
 
         camera = new OrthographicCamera();
         camera.setToOrtho(false);
-        scalingViewport = new ScalingViewport(Scaling.fill, config.game_resolution_x, config.game_resolution_y, camera);
+        scalingViewport = new ScalingViewport(Scaling.fill, game.getConfig().game_resolution_x, game.getConfig().game_resolution_y, camera);
     }
 
     @Override
@@ -63,7 +60,7 @@ public class RoomGame implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         // Sort the camera and viewport
-        camera.position.set(config.game_resolution_x / 2, config.game_resolution_y / 2, 0);
+        camera.position.set(game.getConfig().game_resolution_x / 2, game.getConfig().game_resolution_y / 2, 0);
         scalingViewport.update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         // Add new entities

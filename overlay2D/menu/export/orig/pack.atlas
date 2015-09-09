@@ -1,0 +1,55 @@
+
+pack.png
+size: 2048,2048
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+bluepanel
+  rotate: false
+  xy: 2, 104
+  size: 100, 100
+  split: 7, 8, 7, 8
+  orig: 100, 100
+  offset: 0, 0
+  index: -1
+coloredtalltrees
+  rotate: false
+  xy: 2, 206
+  size: 1024, 1025
+  orig: 1024, 1025
+  offset: 0, 0
+  index: -1
+greenpanel
+  rotate: false
+  xy: 1028, 1131
+  size: 100, 100
+  split: 7, 9, 7, 8
+  pad: -1, -1, 0, 8
+  orig: 100, 100
+  offset: 0, 0
+  index: -1
+greypanel
+  rotate: false
+  xy: 2, 2
+  size: 100, 100
+  split: 8, 8, 8, 9
+  pad: -1, -1, 9, 0
+  orig: 100, 100
+  offset: 0, 0
+  index: -1
+redpanel
+  rotate: false
+  xy: 104, 104
+  size: 100, 100
+  split: 7, 8, 7, 8
+  orig: 100, 100
+  offset: 0, 0
+  index: -1
+yellowpanel
+  rotate: false
+  xy: 1028, 1029
+  size: 100, 100
+  split: 10, 10, 9, 8
+  orig: 100, 100
+  offset: 0, 0
+  index: -1
