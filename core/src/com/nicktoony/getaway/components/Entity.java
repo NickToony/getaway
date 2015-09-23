@@ -18,4 +18,5 @@ public abstract class Entity {
     public abstract void create();
     public abstract void step();
     public abstract void render(SpriteBatch batch);
+    public abstract void dispose();
 }

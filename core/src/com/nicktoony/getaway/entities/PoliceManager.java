@@ -2,7 +2,6 @@ package com.nicktoony.getaway.entities;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.nicktoony.getaway.components.Entity;
-import com.nicktoony.getaway.entities.Police;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +40,7 @@ public class PoliceManager extends Entity {
                     }
                 }
 
-                if (Math.abs(x - game.getPlayer().getX()) < SPACE_BETWEEN) {
+                if (Math.abs(x - game.getPlayer().getXPercentage()) < SPACE_BETWEEN) {
                     okay = false;
                 }
 
@@ -61,5 +60,14 @@ public class PoliceManager extends Entity {
     @Override
     public void render(SpriteBatch batch) {
         // doesn't render anything
+    }
+
+    @Override
+    public void dispose() {
+
+    }
+
+    public void remove(Police police) {
+        policeList.remove(police);
     }
 }

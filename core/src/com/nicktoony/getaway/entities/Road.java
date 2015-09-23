@@ -214,6 +214,11 @@ public class Road extends Entity {
         }
     }
 
+    @Override
+    public void dispose() {
+        
+    }
+
     /**
      * Find the position on the screen, given the road position
      * @param x the x position of the road (from -1 to 1)

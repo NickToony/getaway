@@ -10,9 +10,8 @@ import java.util.Random;
 /**
  * Created by Nick on 03/09/2015.
  */
-public class Police extends Entity {
+public class Police extends Car {
     private Texture texture;
-    private Sprite sprite;
     private float x;
     private float y;
     private float targetY;
@@ -37,6 +36,8 @@ public class Police extends Entity {
         texture = new Texture("graphics/vehicles/car_blue_1.png");
         sprite = new Sprite(texture);
         sprite.setOriginCenter();
+
+        setupBody();
     }
 
     @Override
@@ -44,6 +45,9 @@ public class Police extends Entity {
         Road.RoadPosition pos = game.getRoad().findScreenPosition(x, y);
         sprite.setCenter(pos.x, pos.y);
 //        sprite.setRotation(-pos.angle/2);
+
+        // update Box2d angle
+        body.setTransform(pos.x, pos.y, 0);
 
         if (targetDelay == 0) {
             targetY = TARGET_Y_MIN + (random.nextFloat() * (TARGET_Y_MAX - TARGET_Y_MIN));
@@ -63,6 +67,12 @@ public class Police extends Entity {
     @Override
     public void render(SpriteBatch batch) {
         sprite.draw(batch);
+    }
+
+    @Override
+    public void dispose() {
+        game.getPoliceManager().remove(this);
+        game.destroyBody(body);
     }
 
     public float getX() {
