@@ -1,7 +1,9 @@
 ![](https://github.com/NickToony/getaway/blob/master/screenshots/screenshot1.png)
 
 # Getaway
-This is a quick LibGDX game where you must escape police and dodge civilians in your getaway vehicle. It's primarily targetted at mobile devices.
+This is a quick LibGDX game where you must escape police and dodge civilians in your getaway vehicle. It's primarily targeted at mobile devices.
+
+One of the many random games I've built using Kenney's graphics set, and is unlikely to be finished.
 
 ## Credits
 
